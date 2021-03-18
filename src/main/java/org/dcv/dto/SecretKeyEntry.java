@@ -1,5 +1,6 @@
 package org.dcv.dto;
 
+import lombok.NonNull;
 import lombok.Value;
 
 import javax.validation.constraints.NotBlank;
@@ -11,13 +12,20 @@ import static org.dcv.util.Constants.REQUEST_ENTRY_ITEM_PATTERN;
 @Value
 public class SecretKeyEntry {
 
+//    public SecretKeyEntry(final String groupId, final String artifactId, final String secretKeyName) {
+//        this(groupId, artifactId, secretKeyName, null);
+//    }
+
     @Pattern(regexp = REQUEST_ENTRY_ITEM_PATTERN)
+    @NonNull
     String groupId;
 
     @Pattern(regexp = REQUEST_ENTRY_ITEM_PATTERN)
+    @NonNull
     String artifactId;
 
     @Pattern(regexp = REQUEST_ENTRY_ITEM_PATTERN)
+    @NonNull
     String secretKeyName;
 
     @NotBlank

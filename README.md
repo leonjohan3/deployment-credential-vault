@@ -23,12 +23,15 @@ version control system)
 * [Arquillian Docs](<http://arquillian.org/arquillian-core/#_guide>)
 * [](<>)
 * [](<>)
+* [](<>)
 
 ## Tomcat
 * [Tomcat](<https://tomcat.apache.org/tomcat-9.0-doc/index.html>)
 * [Tomcat Config](<https://tomcat.apache.org/tomcat-9.0-doc/config/>)
 
 ## Other
+* [Active Object using ForkJoinPool](<https://en.wikipedia.org/wiki/Active_object#Java_8_(alternative)>)
+* [Software design pattern](<https://en.wikipedia.org/wiki/Software_design_pattern>)
 * [Java Validation API Example](<https://www.baeldung.com/javax-validation>)
 * [Servlet Handler Interceptor Example](<https://www.baeldung.com/spring-mvc-handlerinterceptor>)
 * [Logback MDC](<http://logback.qos.ch/manual/mdc.html>)
@@ -39,6 +42,9 @@ version control system)
 
 # Notes
 * Keystore format/type used: pkcs11
+* Secret key entry used with algorithm PBEWithMD5AndDES
 
 # TODO
 * Implement caching
+* Save AJP and keystore password in keystore
+* Use Spring @Notnull

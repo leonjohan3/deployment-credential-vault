@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
+import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 
 @Slf4j
@@ -33,6 +34,7 @@ public class LogTask implements Runnable {
                     if (!task.getMdcContext().isEmpty()) {
                         MDC.setContextMap(task.getMdcContext());
                     }
+                    // do not log above the above block
 
                     if (task.getMessage().equalsIgnoreCase("stop")) {
                         shouldContinue = false;
@@ -46,8 +48,11 @@ public class LogTask implements Runnable {
                         }
                     }
 
+                    // do not log below this block
                     if (nonNull(originalMdcContext)) {
                         MDC.setContextMap(originalMdcContext);
+                    } else {
+                        MDC.clear();
                     }
                 } catch (InterruptedException e) {
                     log.error("", e);
@@ -56,9 +61,17 @@ public class LogTask implements Runnable {
             }
         } catch (Exception e) {
             log.error("", e);
-        }
-        if (shouldContinue) {
-            applicationEventPublisher.publishEvent(new ConsumerStoppedEvent(this));
+        } finally {
+
+            if (shouldContinue) {
+
+                try {
+                    applicationEventPublisher.publishEvent(new ConsumerStoppedEvent(this));
+                } catch (Throwable t) {
+                    System.err.println(format("LogTask, terminate vm, error: %s", t.getMessage()));
+                    System.exit(1);
+                }
+            }
         }
         log.info("stopping");
     }

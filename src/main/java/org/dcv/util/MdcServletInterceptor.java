@@ -14,18 +14,16 @@ import static org.dcv.util.Constants.CORRELATION_ID_HEADER;
 import static org.dcv.util.Constants.CORRELATION_ID_LENGTH;
 
 @Slf4j
-//@Component
 public class MdcServletInterceptor implements HandlerInterceptor {
 
     @Override
-    public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler) throws Exception {
+    public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler) {
 
-        log.info("pre: {}", MDC.getCopyOfContextMap());
         removeCorrIdFromMdcIfExist();
 
         String corrIdOnRequest = request.getHeader(CORRELATION_ID_HEADER);
         final String corrIdOnResponse = response.getHeader(CORRELATION_ID_HEADER);
-        log.info("corrIdOnResponse: {}", corrIdOnResponse);
+        log.debug("corrIdOnRequest: {}, corrIdOnResponse: {}", corrIdOnRequest, corrIdOnResponse);
 
         if (nonNull(corrIdOnResponse)) {
             corrIdOnRequest = corrIdOnResponse;
@@ -34,39 +32,28 @@ public class MdcServletInterceptor implements HandlerInterceptor {
         // if request does not have a corrId header, generate one
         if (isNull(corrIdOnRequest)) {
             corrIdOnRequest = RandomStringUtils.randomAlphanumeric(CORRELATION_ID_LENGTH).toLowerCase();
+            log.debug("generated random corrId: {}", corrIdOnRequest);
         }
+        MDC.put(CORRELATION_ID_HEADER, corrIdOnRequest);
+
         if (isNull(corrIdOnResponse)) {
             response.addHeader(CORRELATION_ID_HEADER, corrIdOnRequest);
+            log.debug("added HTTP header corrId: {}", corrIdOnRequest);
         }
-
-//        if (nonNull(corrId)) {
-        MDC.put(CORRELATION_ID_HEADER, corrIdOnRequest);
-//        }
-        log.info("pre");
         return true;
     }
 
     @Override
     public void afterCompletion(final HttpServletRequest request, final HttpServletResponse response, final Object handler, final Exception ex) {
-        log.info("afterC before");
-//        final String corrIdOnMdc = MDC.get(CORRELATION_ID_HEADER);
         removeCorrIdFromMdcIfExist();
-//        log.info("corrIdOnMdc: {}", corrIdOnMdc);
-//        final String corrId = request.getHeader(CORRELATION_ID_HEADER);
-
-//        if (isNull(corrId) && nonNull(corrIdOnMdc)) {
-//        if (nonNull(corrIdOnMdc)) {
-//            response.addHeader(CORRELATION_ID_HEADER, corrIdOnMdc);
-//        }
-//        if (nonNull(MDC.get(CORRELATION_ID_HEADER))) {
-//            MDC.remove(CORRELATION_ID_HEADER);
-//        }
-        log.info("afterC after");
     }
 
     private void removeCorrIdFromMdcIfExist() {
-        if (nonNull(MDC.get(CORRELATION_ID_HEADER))) {
+        final String corrIdOnMdc = MDC.get(CORRELATION_ID_HEADER);
+
+        if (nonNull(corrIdOnMdc)) {
             MDC.remove(CORRELATION_ID_HEADER);
+            log.debug("removed from MDC, corrId: {}", corrIdOnMdc);
         }
     }
 }

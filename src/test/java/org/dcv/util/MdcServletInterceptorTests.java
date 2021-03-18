@@ -21,7 +21,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
-//@ExtendWith(MockitoJUnitRunner)
 public class MdcServletInterceptorTests {
     private MdcServletInterceptor mdcServletInterceptor;
 
@@ -31,7 +30,7 @@ public class MdcServletInterceptorTests {
     }
 
     @Test
-    public void shouldGenerateRandomCorrId() throws Exception {
+    public void shouldGenerateRandomCorrId() {
 
         // given: all data (test fixture) preparation
         final HttpServletRequest mockHttpServletRequest = mock(HttpServletRequest.class);
@@ -50,7 +49,7 @@ public class MdcServletInterceptorTests {
     }
 
     @Test
-    public void shouldUseProvidedCorrId() throws Exception {
+    public void shouldUseProvidedCorrId() {
 
         // given: all data (test fixture) preparation
         final String providedCorrId = "providedCorrId";
@@ -70,7 +69,7 @@ public class MdcServletInterceptorTests {
     }
 
     @Test
-    public void shouldNotAddAdditionalHeader() throws Exception {
+    public void shouldNotAddAdditionalHeader() {
 
         // given: all data (test fixture) preparation
         final String providedCorrIdOnRequest = "providedCorrIdOnRequest";
@@ -91,7 +90,7 @@ public class MdcServletInterceptorTests {
     }
 
     @Test
-    public void shouldRemoveCorrIdFromMdcIfExist() throws Exception {
+    public void shouldRemoveCorrIdFromMdcIfExist() {
 
         // given: all data (test fixture) preparation
         final String providedCorrId = "providedCorrId";
@@ -106,7 +105,7 @@ public class MdcServletInterceptorTests {
     }
 
     @Test
-    public void shouldNotRemoveCorrIdFromMdcIfNotExist() throws Exception {
+    public void shouldNotRemoveCorrIdFromMdcIfNotExist() {
 
         // when : method to be checked invocation
         mdcServletInterceptor.afterCompletion(null, null, null, null);

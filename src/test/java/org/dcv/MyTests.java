@@ -76,7 +76,8 @@ public class MyTests {
 
         final char[] password = "oFFline33".toCharArray();
         final KeyStore keyStore = KeyStore.getInstance(new File("src/test/resources", "new_keystore"), password);
-        final String alias = "mypass2";
+//        final String alias = "mypass2";
+        final String alias = "group.id__artifact_id__secret_key_name";
         KeyStore.SecretKeyEntry myspass2;
 
         if (keyStore.containsAlias(alias)) {
