@@ -34,7 +34,7 @@ public class WriteSecretKeyEntryTask extends RecursiveTask<Exception> {
         try {
 
             MDC.setContextMap(mdcContext);
-            log.debug("start compute, keyfile:{}, alias:{}, value:{}", keystoreFile, alias, value);
+            log.debug("start compute, keystore file:{}, alias:{}, value:{}", keystoreFile, alias, value);
             final char[] password = keystorePassword.toCharArray();
             KeyStore keyStore;
 

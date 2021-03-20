@@ -1,37 +1,18 @@
 package org.dcv.dto;
 
-import lombok.NonNull;
+import lombok.EqualsAndHashCode;
 import lombok.Value;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
-
-import static org.dcv.util.Constants.ALIAS_NAME_PART_DELIMITER;
-import static org.dcv.util.Constants.REQUEST_ENTRY_ITEM_PATTERN;
 
 @Value
-public class SecretKeyEntry {
-
-//    public SecretKeyEntry(final String groupId, final String artifactId, final String secretKeyName) {
-//        this(groupId, artifactId, secretKeyName, null);
-//    }
-
-    @Pattern(regexp = REQUEST_ENTRY_ITEM_PATTERN)
-    @NonNull
-    String groupId;
-
-    @Pattern(regexp = REQUEST_ENTRY_ITEM_PATTERN)
-    @NonNull
-    String artifactId;
-
-    @Pattern(regexp = REQUEST_ENTRY_ITEM_PATTERN)
-    @NonNull
-    String secretKeyName;
-
+@EqualsAndHashCode(callSuper = true)
+public class SecretKeyEntry extends SecretKeyEntryKeyName {
     @NotBlank
     String secretKeyValue;
 
-    public String getAlias() {
-        return groupId + ALIAS_NAME_PART_DELIMITER + artifactId + ALIAS_NAME_PART_DELIMITER + secretKeyName;
+    public SecretKeyEntry(final String groupId, final String artifactId, final String secretKeyName, final String secretKeyValue) {
+        super(groupId, artifactId, secretKeyName);
+        this.secretKeyValue = secretKeyValue;
     }
 }

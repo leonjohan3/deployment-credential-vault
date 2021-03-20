@@ -1,25 +1,19 @@
 debug: false
 
-management:
-  endpoint:
-    health:
-      show-details: always
-  endpoints:
-    web:
-      exposure:
-        include: health
+#management:
+#  endpoint:
+#    health:
+#      show-details: always
+#  endpoints:
+#    web:
+#      exposure:
+#        include: health
 
 server:
   port: 8080
   shutdown: graceful
   servlet:
     contextPath: /dcv
-#  ssl:
-#    enabled: true
-#    key-store-type : JKS
-#    key-store : classpath:keystore/nonprod.acquiring.cuscalad.com.jks
-#    key-store-password : changeit
-#    require-ssl : false
 
 logging:
   file:
@@ -34,31 +28,5 @@ spring:
   lifecycle:
     timeout-per-shutdown-phase: 10s
 
-#  h2:
-#    console:
-#      enabled: ${H2_CONSOLE_ENABLED:false}
-
-#  datasource:
-#    continue-on-error: ${CONTINUE_ON_ERROR:true}
-#    url: ${PRIMARY_DATA_SOURCE_URL:jdbc:h2:./acquiring}
-#    username: ${PRIMARY_DB_USER:sa}
-#    password: ${PRIMARY_DB_PASSWORD:}
-
-#auditApiUrl: ${AUDIT_API_URL:http://ul25as15v:9021/audit/v1/event}
-
-#das:
-
-#  secondary-datasource:
-#    url: ${SECONDARY_DATA_SOURCE_URL:jdbc:derby:./acquiring-secondary;create=true}
-#    username: ${SECONDARY_DB_USER:sa}
-#    password: ${SECONDARY_DB_PASSWORD:}
-#
-#  audit-enabled: ${AUDIT_ENABLED:false}
-#
-#  transaction-query-stored-proc-name: get_transaction_status
-#  account-lookup-stored-proc-name: do_visa_direct_account_lookup
-
 dcv:
-#  keystore-password: oFFline33
-  keystore: src/test/resources/keystoree
-#  keystore-keystore: src/test/resources/keystore-keystore
+  keystore: src/test/resources/keystore

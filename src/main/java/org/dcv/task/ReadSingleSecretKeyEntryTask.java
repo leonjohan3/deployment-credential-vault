@@ -28,7 +28,7 @@ public class ReadSingleSecretKeyEntryTask extends RecursiveTask<ReadSingleSecret
         try {
 
             MDC.setContextMap(mdcContext);
-            log.debug("start compute, keyfile:{}, alias:{}", keystoreFile, alias);
+            log.debug("start compute, keystore file:{}, alias:{}", keystoreFile, alias);
             final char[] password = keystorePassword.toCharArray();
             final KeyStore keyStore = KeyStore.getInstance(keystoreFile, password);
             final KeyStore.SecretKeyEntry entry = (KeyStore.SecretKeyEntry) keyStore.getEntry(alias, new KeyStore.PasswordProtection(password));

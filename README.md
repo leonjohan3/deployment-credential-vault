@@ -23,13 +23,13 @@ version control system)
 * [Arquillian Docs](<http://arquillian.org/arquillian-core/#_guide>)
 * [](<>)
 * [](<>)
-* [](<>)
 
 ## Tomcat
 * [Tomcat](<https://tomcat.apache.org/tomcat-9.0-doc/index.html>)
 * [Tomcat Config](<https://tomcat.apache.org/tomcat-9.0-doc/config/>)
 
 ## Other
+* [Top 10 Web Application Security Risks](<https://owasp.org/www-project-top-ten/>)
 * [Active Object using ForkJoinPool](<https://en.wikipedia.org/wiki/Active_object#Java_8_(alternative)>)
 * [Software design pattern](<https://en.wikipedia.org/wiki/Software_design_pattern>)
 * [Java Validation API Example](<https://www.baeldung.com/javax-validation>)
@@ -41,8 +41,10 @@ version control system)
 * [Slf4j Simple Logger](<http://www.slf4j.org/api/org/slf4j/impl/SimpleLogger.html>)
 
 # Notes
-* Keystore format/type used: pkcs11
-* Secret key entry used with algorithm PBEWithMD5AndDES
+* Keystore format/type uses: "pkcs11"
+* Secret key entries use algorithm: "PBEWithMD5AndDES"
+* The .keystore file in the project folder, and the keystore file in src/test/resources have a password equal to the filename 
+* Before running the application locally or the tests, run `export KEYSTORE_PASSWORD=.keystore`
 
 # TODO
 * Implement caching
