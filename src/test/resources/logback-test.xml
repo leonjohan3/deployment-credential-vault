@@ -8,5 +8,5 @@
 <!--    <root level="DEBUG">-->
 <!--        <appender-ref ref="CONSOLE"/>-->
 <!--    </root>-->
-    <logger name="root" level="WARN"/>
+    <logger name="root" level="INFO"/>
 </configuration>

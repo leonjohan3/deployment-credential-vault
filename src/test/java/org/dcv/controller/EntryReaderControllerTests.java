@@ -58,6 +58,7 @@ public class EntryReaderControllerTests {
                 .header(CORRELATION_ID_HEADER, corrId))
 
                 // then : checks and assertions
+//                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(header().string(CORRELATION_ID_HEADER, corrId))
                 .andExpect(content().contentType(MEDIA_TYPE_TEXT_PLAIN))
@@ -97,7 +98,8 @@ public class EntryReaderControllerTests {
         given(entryReaderService.getSecretKeyEntry(eq(secretKeyEntry))).willReturn(new ReadSingleSecretKeyEntryResponse(null, null));
 
         // when : method to be checked invocation
-        mvc.perform(get(URL_GET_SECRET_KEY_ENTRY_UNDER_TEST, secretKeyEntry.getGroupId(), secretKeyEntry.getArtifactId(), secretKeyEntry.getSecretKeyName()))
+        mvc.perform(get(URL_GET_SECRET_KEY_ENTRY_UNDER_TEST, secretKeyEntry.getGroupId(), secretKeyEntry.getArtifactId(),
+                secretKeyEntry.getSecretKeyName()))
 
                 // then : checks and assertions
 //                .andDo(print())
@@ -137,10 +139,12 @@ public class EntryReaderControllerTests {
         final String exceptionMessage = "exceptionMessage";
         final SecretKeyEntryKeyName secretKeyEntry = new SecretKeyEntryKeyName("groupId", "artifact-Id", "secret.Key_Name");
 
-        given(entryReaderService.getSecretKeyEntry(eq(secretKeyEntry))).willReturn(new ReadSingleSecretKeyEntryResponse(null, new IllegalStateException(exceptionMessage)));
+        given(entryReaderService.getSecretKeyEntry(eq(secretKeyEntry))).willReturn(new ReadSingleSecretKeyEntryResponse(null,
+                new IllegalStateException(exceptionMessage)));
 
         // when : method to be checked invocation
-        mvc.perform(get(URL_GET_SECRET_KEY_ENTRY_UNDER_TEST, secretKeyEntry.getGroupId(), secretKeyEntry.getArtifactId(), secretKeyEntry.getSecretKeyName()))
+        mvc.perform(get(URL_GET_SECRET_KEY_ENTRY_UNDER_TEST, secretKeyEntry.getGroupId(), secretKeyEntry.getArtifactId(),
+                secretKeyEntry.getSecretKeyName()))
 
                 // then : checks and assertions
 //                .andDo(print())
@@ -159,13 +163,14 @@ public class EntryReaderControllerTests {
         final String exceptionMessage = "exceptionMessage";
         final SecretKeyEntryBase secretKeyEntry = new SecretKeyEntryBase("groupId", "artifact-Id");
 
-        given(entryReaderService.getExportedSecretKeyEntries(eq(secretKeyEntry))).willReturn(new ReadSecretKeyEntriesResponse(EMPTY_MAP, null, new IllegalStateException(exceptionMessage)));
+        given(entryReaderService.getExportedSecretKeyEntries(eq(secretKeyEntry))).willReturn(new ReadSecretKeyEntriesResponse(EMPTY_MAP, null,
+                new IllegalStateException(exceptionMessage)));
 
         // when : method to be checked invocation
         mvc.perform(get(URL_GET_SECRET_KEY_ENTRIES_UNDER_TEST, secretKeyEntry.getGroupId(), secretKeyEntry.getArtifactId()))
 
                 // then : checks and assertions
-                .andDo(print())
+//                .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(header().string(CORRELATION_ID_HEADER, not(blankOrNullString())))
                 .andExpect(header().string(ERROR_MESSAGE_HEADER_NAME, exceptionMessage));

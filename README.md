@@ -48,5 +48,8 @@ version control system)
 
 # TODO
 * Implement caching
-* Save AJP and keystore password in keystore
+* Save AJP and keystore and shutdown password in keystore
 * Use Spring @Notnull
+* OWASP top 10
+* Ubuntu signed installs only 
+* https://www.tecmint.com/protect-apache-using-mod_security-and-mod_evasive-on-rhel-centos-fedora/

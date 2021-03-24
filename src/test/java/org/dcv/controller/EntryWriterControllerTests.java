@@ -21,6 +21,7 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -65,6 +66,7 @@ public class EntryWriterControllerTests {
                 .content("secret_key_name=secret_key_value&secret_key_other_name=secret_key_other_value"))
 
                 // then : checks and assertions
+//                .andDo(print())
                 .andExpect(status().isCreated());
 
         verify(entryWriterService, times(2)).setSecretKeyEntry(any(SecretKeyEntry.class));
