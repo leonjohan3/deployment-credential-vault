@@ -16,6 +16,7 @@ import static org.dcv.util.Constants.CORRELATION_ID_HEADER;
 import static org.dcv.util.Constants.ERROR_MESSAGE_HEADER_NAME;
 import static org.dcv.util.Constants.MEDIA_TYPE_TEXT_PLAIN;
 import static org.hamcrest.core.IsNot.not;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.hamcrest.text.IsBlankString.blankOrNullString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -60,7 +61,7 @@ public class EntryReaderControllerTests {
                 // then : checks and assertions
 //                .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(header().string(CORRELATION_ID_HEADER, corrId))
+                .andExpect(header().string(CORRELATION_ID_HEADER, nullValue()))
                 .andExpect(content().contentType(MEDIA_TYPE_TEXT_PLAIN))
                 .andExpect(content().string(secretKeyValue));
     }
@@ -82,7 +83,7 @@ public class EntryReaderControllerTests {
 
                 // then : checks and assertions
                 .andExpect(status().isOk())
-                .andExpect(header().string(CORRELATION_ID_HEADER, corrId))
+                .andExpect(header().string(CORRELATION_ID_HEADER, nullValue()))
                 .andExpect(content().contentType(MEDIA_TYPE_TEXT_PLAIN))
                 .andExpect(content().string(exportedSecretKeyEntries));
     }

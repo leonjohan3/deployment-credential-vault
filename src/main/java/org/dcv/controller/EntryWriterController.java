@@ -106,7 +106,7 @@ public class EntryWriterController {
                 return ResponseEntity.badRequest().header(ERROR_MESSAGE_HEADER_NAME, exception.getMessage()).body(exception.getMessage());
             }
         }
-        log.info("finish getSecretKeyEntry, count:{}", secretKeyNames.size());
+        log.info("finish setSecretKeyEntry, count:{}", secretKeyNames.size());
         return ResponseEntity.status(CREATED).build();
     }
 }

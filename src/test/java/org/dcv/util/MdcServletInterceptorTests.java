@@ -49,7 +49,7 @@ public class MdcServletInterceptorTests {
     }
 
     @Test
-    public void shouldUseProvidedCorrId() {
+    public void shouldUseProvidedCorrIdAndNotAddThisHeaderToResponse() {
 
         // given: all data (test fixture) preparation
         final String providedCorrId = "providedCorrId";
@@ -65,7 +65,7 @@ public class MdcServletInterceptorTests {
         // then : checks and assertions
         final String corrId = MDC.get(CORRELATION_ID_HEADER);
         assertThat(corrId, is(providedCorrId));
-        verify(mockHttpServletResponse).addHeader(eq(CORRELATION_ID_HEADER), eq(providedCorrId));
+        verify(mockHttpServletResponse, never()).addHeader(any(), any());
     }
 
     @Test

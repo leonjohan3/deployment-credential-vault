@@ -15,7 +15,7 @@ import static org.hamcrest.core.Is.is;
         properties = {
                 "debug=false",
                 "logging.level.root=warn",
-                "logging.level.org.dcv=debug",
+                "logging.level.org.dcv=warn",
                 "spring.main.banner-mode=off"
 //                "dcv.keystore=src/test/resources/keystore"
         })

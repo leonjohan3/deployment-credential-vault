@@ -53,3 +53,4 @@ version control system)
 * OWASP top 10
 * Ubuntu signed installs only 
 * https://www.tecmint.com/protect-apache-using-mod_security-and-mod_evasive-on-rhel-centos-fedora/
+* OpenAPI docs

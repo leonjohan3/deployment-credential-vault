@@ -36,7 +36,7 @@ public class MdcServletInterceptor implements HandlerInterceptor {
         }
         MDC.put(CORRELATION_ID_HEADER, corrIdOnRequest);
 
-        if (isNull(corrIdOnResponse)) {
+        if (isNull(corrIdOnResponse) && CORRELATION_ID_LENGTH == corrIdOnRequest.length()) {
             response.addHeader(CORRELATION_ID_HEADER, corrIdOnRequest);
             log.debug("added HTTP header corrId: {}", corrIdOnRequest);
         }

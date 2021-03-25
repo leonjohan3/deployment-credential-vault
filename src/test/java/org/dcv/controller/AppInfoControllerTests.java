@@ -11,6 +11,7 @@ import static java.time.LocalDateTime.now;
 import static org.dcv.config.BuildInfoConfig.BuildInfo;
 import static org.dcv.util.Constants.CORRELATION_ID_HEADER;
 import static org.hamcrest.core.IsNot.not;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.hamcrest.text.IsBlankString.blankOrNullString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -51,7 +52,7 @@ public class AppInfoControllerTests {
 
                 // then : checks and assertions
                 .andExpect(status().isOk())
-                .andExpect(header().string(CORRELATION_ID_HEADER, corrId))
+                .andExpect(header().string(CORRELATION_ID_HEADER, nullValue()))
                 .andExpect(content().contentType(APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.version").value(version));
     }
