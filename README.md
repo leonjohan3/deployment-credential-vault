@@ -58,3 +58,5 @@ version control system)
 * https://www.tecmint.com/protect-apache-using-mod_security-and-mod_evasive-on-rhel-centos-fedora/
 * OpenAPI docs
 * limit secret key and value sizes
+* write standalone app to import cert key into .keystore
+* remove appinfo controller and related classes - this information is available on the actuator
