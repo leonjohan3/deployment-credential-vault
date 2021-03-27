@@ -11,4 +11,5 @@ public final class Constants {
     public final static String MASKED_SECRET_KEY_VALUE = "******";
     public final static String ERROR_MESSAGE_HEADER_NAME = "x-Error-Message";
     public final static int CORRELATION_ID_LENGTH = 6;
+    public final static int MAX_SECRET_VALUE_LENGTH = 65_536;
 }

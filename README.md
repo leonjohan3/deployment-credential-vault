@@ -23,12 +23,14 @@ version control system)
 * [Arquillian Docs](<http://arquillian.org/arquillian-core/#_guide>)
 * [](<>)
 * [](<>)
+* [](<>)
 
 ## Tomcat
 * [Tomcat](<https://tomcat.apache.org/tomcat-9.0-doc/index.html>)
 * [Tomcat Config](<https://tomcat.apache.org/tomcat-9.0-doc/config/>)
 
 ## Other
+* [Minica CA](<https://github.com/jsha/minica>)
 * [Top 10 Web Application Security Risks](<https://owasp.org/www-project-top-ten/>)
 * [Active Object using ForkJoinPool](<https://en.wikipedia.org/wiki/Active_object#Java_8_(alternative)>)
 * [Software design pattern](<https://en.wikipedia.org/wiki/Software_design_pattern>)
@@ -39,6 +41,7 @@ version control system)
 * [Java Security](<https://docs.oracle.com/en/java/javase/11/security/security-api-specification1.html>)
 * [Security Terms Explained](<https://docs.oracle.com/en/java/javase/11/security/java-cryptography-architecture-jca-reference-guide.html#GUID-94225C88-F2F1-44D1-A781-1DD9D5094566>)
 * [Slf4j Simple Logger](<http://www.slf4j.org/api/org/slf4j/impl/SimpleLogger.html>)
+* [Github Secrets](<https://docs.github.com/en/actions/reference/encrypted-secrets>)
 
 # Notes
 * Keystore format/type uses: "pkcs11"
@@ -54,3 +57,4 @@ version control system)
 * Ubuntu signed installs only 
 * https://www.tecmint.com/protect-apache-using-mod_security-and-mod_evasive-on-rhel-centos-fedora/
 * OpenAPI docs
+* limit secret key and value sizes
