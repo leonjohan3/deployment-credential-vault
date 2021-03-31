@@ -12,7 +12,7 @@ management:
       cors:
         allowed-origins: "https://example.com"
         allowed-methods: GET
-        
+
 server:
   port: 8080
   shutdown: graceful

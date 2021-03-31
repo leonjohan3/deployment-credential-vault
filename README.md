@@ -21,6 +21,7 @@ version control system)
 * [Tomcat Embedded](<https://tomcat.apache.org/tomcat-5.5-doc/catalina/docs/api/org/apache/catalina/startup/Embedded.html>)
 * [How to test REST Controllers outside container](<https://github.com/spring-projects/spring-framework/blob/master/spring-test/src/test/java/org/springframework/test/web/servlet/samples/client/standalone/ResponseBodyTests.java>)
 * [Arquillian Docs](<http://arquillian.org/arquillian-core/#_guide>)
+* [Mockito](<https://site.mockito.org>)
 * [](<>)
 * [](<>)
 * [](<>)
@@ -30,6 +31,8 @@ version control system)
 * [Tomcat Config](<https://tomcat.apache.org/tomcat-9.0-doc/config/>)
 
 ## Other
+* [SpringFox](<https://github.com/springfox/springfox>)
+* [SpringFox Demo](<https://github.com/springfox/springfox-demos/blob/master/boot-swagger/src/main/java/springfoxdemo/boot/swagger/SwaggerUiWebMvcConfigurer.java>)
 * [Minica CA](<https://github.com/jsha/minica>)
 * [Top 10 Web Application Security Risks](<https://owasp.org/www-project-top-ten/>)
 * [Active Object using ForkJoinPool](<https://en.wikipedia.org/wiki/Active_object#Java_8_(alternative)>)
@@ -59,4 +62,5 @@ version control system)
 * OpenAPI docs
 * limit secret key and value sizes
 * write standalone app to import cert key into .keystore
-* remove appinfo controller and related classes - this information is available on the actuator
+* Use @AutoConfigureWebTestClient (https://docs.spring.io/spring-boot/docs/2.4.3/reference/html/spring-boot-features.html#boot-features-testing)
+* implement delete entry

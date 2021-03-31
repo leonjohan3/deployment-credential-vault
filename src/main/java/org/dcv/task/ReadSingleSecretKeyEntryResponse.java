@@ -1,9 +1,28 @@
 package org.dcv.task;
 
-import lombok.Value;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.springframework.lang.NonNull;
 
-@Value
+import static java.util.Objects.nonNull;
+
+//@Value
+//@RequiredArgsConstructor
+@NoArgsConstructor
+@Getter
 public class ReadSingleSecretKeyEntryResponse {
-    String secretKeyEntry;
-    Exception exception;
+    private String secretKeyEntry;
+    private Exception exception;
+
+    public ReadSingleSecretKeyEntryResponse(@NonNull final String secretKeyEntry) {
+        this.secretKeyEntry = secretKeyEntry;
+    }
+
+    public ReadSingleSecretKeyEntryResponse(@NonNull final Exception exception) {
+        this.exception = exception;
+    }
+
+    public boolean hasException() {
+        return nonNull(exception);
+    }
 }

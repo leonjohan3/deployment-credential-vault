@@ -11,6 +11,9 @@ import java.util.Map;
 import java.util.concurrent.RecursiveTask;
 
 import static java.util.Objects.isNull;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
+import static java.util.Optional.ofNullable;
 
 @Slf4j
 @Value
@@ -33,11 +36,12 @@ public class ReadSingleSecretKeyEntryTask extends RecursiveTask<ReadSingleSecret
             final KeyStore keyStore = KeyStore.getInstance(keystoreFile, password);
             final KeyStore.SecretKeyEntry entry = (KeyStore.SecretKeyEntry) keyStore.getEntry(alias, new KeyStore.PasswordProtection(password));
             log.debug("finish compute");
-            return new ReadSingleSecretKeyEntryResponse(isNull(entry) ? null : new String(entry.getSecretKey().getEncoded()), null);
+            return new ReadSingleSecretKeyEntryResponse(isNull(entry) ? "" : new String(entry.getSecretKey().getEncoded()));
+//            return new ReadSingleSecretKeyEntryResponse(isNull(entry) ? null : new String(entry.getSecretKey().getEncoded()), null);
 
         } catch (Exception e) {
             log.error("compute", e);
-            return new ReadSingleSecretKeyEntryResponse(null, e);
+            return new ReadSingleSecretKeyEntryResponse(e);
         } finally {
             MDC.clear();
         }

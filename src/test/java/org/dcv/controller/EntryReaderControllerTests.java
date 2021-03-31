@@ -22,7 +22,6 @@ import static org.hamcrest.text.IsBlankString.blankOrNullString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -52,7 +51,7 @@ public class EntryReaderControllerTests {
         final String secretKeyValue = "secr__etKeyV! a  lue";
         final SecretKeyEntryKeyName secretKeyEntry = new SecretKeyEntryKeyName("groupId", "artifact-Id", "secret.Key_Name");
 
-        given(entryReaderService.getSecretKeyEntry(eq(secretKeyEntry))).willReturn(new ReadSingleSecretKeyEntryResponse(secretKeyValue, null));
+        given(entryReaderService.getSecretKeyEntry(eq(secretKeyEntry))).willReturn(new ReadSingleSecretKeyEntryResponse(secretKeyValue));
 
         // when : method to be checked invocation
         mvc.perform(get(URL_GET_SECRET_KEY_ENTRY_UNDER_TEST, secretKeyEntry.getGroupId(), secretKeyEntry.getArtifactId(), secretKeyEntry.getSecretKeyName())
@@ -75,7 +74,7 @@ public class EntryReaderControllerTests {
         final SecretKeyEntryBase secretKeyEntry = new SecretKeyEntryBase("groupId", "artifact-Id");
 
         given(entryReaderService.getExportedSecretKeyEntries(eq(secretKeyEntry))).willReturn(new ReadSecretKeyEntriesResponse(EMPTY_MAP,
-                exportedSecretKeyEntries, null));
+                exportedSecretKeyEntries));
 
         // when : method to be checked invocation
         mvc.perform(get(URL_GET_SECRET_KEY_ENTRIES_UNDER_TEST, secretKeyEntry.getGroupId(), secretKeyEntry.getArtifactId())
@@ -96,7 +95,7 @@ public class EntryReaderControllerTests {
 //        final String secretKeyValue = null;
         final SecretKeyEntryKeyName secretKeyEntry = new SecretKeyEntryKeyName("groupId", "artifact-Id", "secret.Key_Name");
 
-        given(entryReaderService.getSecretKeyEntry(eq(secretKeyEntry))).willReturn(new ReadSingleSecretKeyEntryResponse(null, null));
+        given(entryReaderService.getSecretKeyEntry(eq(secretKeyEntry))).willReturn(new ReadSingleSecretKeyEntryResponse());
 
         // when : method to be checked invocation
         mvc.perform(get(URL_GET_SECRET_KEY_ENTRY_UNDER_TEST, secretKeyEntry.getGroupId(), secretKeyEntry.getArtifactId(),
@@ -118,7 +117,7 @@ public class EntryReaderControllerTests {
 //        final String secretKeyValue = null;
         final SecretKeyEntryBase secretKeyEntry = new SecretKeyEntryBase("groupId", "artifact-Id");
 
-        given(entryReaderService.getExportedSecretKeyEntries(eq(secretKeyEntry))).willReturn(new ReadSecretKeyEntriesResponse(EMPTY_MAP, null, null));
+        given(entryReaderService.getExportedSecretKeyEntries(eq(secretKeyEntry))).willReturn(new ReadSecretKeyEntriesResponse(EMPTY_MAP));
 
         // when : method to be checked invocation
         mvc.perform(get(URL_GET_SECRET_KEY_ENTRIES_UNDER_TEST, secretKeyEntry.getGroupId(), secretKeyEntry.getArtifactId()))
@@ -140,8 +139,7 @@ public class EntryReaderControllerTests {
         final String exceptionMessage = "exceptionMessage";
         final SecretKeyEntryKeyName secretKeyEntry = new SecretKeyEntryKeyName("groupId", "artifact-Id", "secret.Key_Name");
 
-        given(entryReaderService.getSecretKeyEntry(eq(secretKeyEntry))).willReturn(new ReadSingleSecretKeyEntryResponse(null,
-                new IllegalStateException(exceptionMessage)));
+        given(entryReaderService.getSecretKeyEntry(eq(secretKeyEntry))).willReturn(new ReadSingleSecretKeyEntryResponse(new IllegalStateException(exceptionMessage)));
 
         // when : method to be checked invocation
         mvc.perform(get(URL_GET_SECRET_KEY_ENTRY_UNDER_TEST, secretKeyEntry.getGroupId(), secretKeyEntry.getArtifactId(),
@@ -164,8 +162,7 @@ public class EntryReaderControllerTests {
         final String exceptionMessage = "exceptionMessage";
         final SecretKeyEntryBase secretKeyEntry = new SecretKeyEntryBase("groupId", "artifact-Id");
 
-        given(entryReaderService.getExportedSecretKeyEntries(eq(secretKeyEntry))).willReturn(new ReadSecretKeyEntriesResponse(EMPTY_MAP, null,
-                new IllegalStateException(exceptionMessage)));
+        given(entryReaderService.getExportedSecretKeyEntries(eq(secretKeyEntry))).willReturn(new ReadSecretKeyEntriesResponse(new IllegalStateException(exceptionMessage)));
 
         // when : method to be checked invocation
         mvc.perform(get(URL_GET_SECRET_KEY_ENTRIES_UNDER_TEST, secretKeyEntry.getGroupId(), secretKeyEntry.getArtifactId()))

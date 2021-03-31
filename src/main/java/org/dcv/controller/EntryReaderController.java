@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.Pattern;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.dcv.util.Constants.ERROR_MESSAGE_HEADER_NAME;
 import static org.dcv.util.Constants.MASKED_SECRET_KEY_VALUE;
 import static org.dcv.util.Constants.REQUEST_ENTRY_ITEM_PATTERN;
@@ -50,7 +50,7 @@ public class EntryReaderController {
                 artifactId, secretKeyName));
         ResponseEntity<String> response;
 
-        if (nonNull(readSingleSecretKeyEntryResponse.getException())) {
+        if (readSingleSecretKeyEntryResponse.hasException()) {
 //            response = ResponseEntity.badRequest().build();
             response = ResponseEntity.badRequest().header(ERROR_MESSAGE_HEADER_NAME, readSingleSecretKeyEntryResponse.getException().getMessage()).build();
         } else {
@@ -75,17 +75,17 @@ public class EntryReaderController {
                                                       @PathVariable @Pattern(regexp = REQUEST_ENTRY_ITEM_PATTERN) final String artifactId) {
 
         log.info("start getSecretKeyEntries: {}, {}", groupId, artifactId);
-        // TODO - use inheritance for SecretKeyEntry sub types
+        // TODO - use inheritance for SecretKeyEntry sub types [done]
         final ReadSecretKeyEntriesResponse readSecretKeyEntriesResponse = entryReaderService.getExportedSecretKeyEntries(new SecretKeyEntryBase(groupId,
                 artifactId));
         ResponseEntity<String> response;
 
-        if (nonNull(readSecretKeyEntriesResponse.getException())) {
+        if (readSecretKeyEntriesResponse.hasException()) {
             // TODO - change other 400s and 404s
             response = ResponseEntity.badRequest().header(ERROR_MESSAGE_HEADER_NAME, readSecretKeyEntriesResponse.getException().getMessage()).build();
         } else {
 
-            if (isBlank(readSecretKeyEntriesResponse.getExportedSecretKeyEntries())) {
+            if (isNull(readSecretKeyEntriesResponse.getExportedSecretKeyEntries())) {
                 log.warn("finish getSecretKeyEntries: not found");
 //                response = ResponseEntity.notFound().build();
                 response = ResponseEntity.notFound().header(ERROR_MESSAGE_HEADER_NAME, String.format("nothing found for groupId: %s and artifactId: %s", groupId, artifactId)).build();

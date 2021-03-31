@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.dcv.util.Constants.CORRELATION_ID_HEADER;
 import static org.dcv.util.Constants.CORRELATION_ID_LENGTH;
 
@@ -31,7 +32,7 @@ public class MdcServletInterceptor implements HandlerInterceptor {
 
         // if request does not have a corrId header, generate one
         if (isNull(corrIdOnRequest)) {
-            corrIdOnRequest = RandomStringUtils.randomAlphanumeric(CORRELATION_ID_LENGTH).toLowerCase();
+            corrIdOnRequest = randomAlphanumeric(CORRELATION_ID_LENGTH).toLowerCase();
             log.debug("generated random corrId: {}", corrIdOnRequest);
         }
         MDC.put(CORRELATION_ID_HEADER, corrIdOnRequest);

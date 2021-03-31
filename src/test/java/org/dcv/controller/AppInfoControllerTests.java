@@ -1,6 +1,7 @@
 package org.dcv.controller;
 
-import org.dcv.config.BuildInfoConfig;
+import org.dcv.config.BuildInfoConfiguration;
+import org.dcv.dto.BuildInfo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -8,7 +9,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static java.time.LocalDateTime.now;
-import static org.dcv.config.BuildInfoConfig.BuildInfo;
 import static org.dcv.util.Constants.CORRELATION_ID_HEADER;
 import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.IsNull.nullValue;
@@ -35,7 +35,7 @@ public class AppInfoControllerTests {
     private MockMvc mvc;
 
     @MockBean
-    private BuildInfoConfig buildInfoConfig;
+    private BuildInfoConfiguration buildInfoConfiguration;
 
     @Test
     void shouldSuccessfullyProvideBuildInfo() throws Exception {
@@ -44,7 +44,7 @@ public class AppInfoControllerTests {
         final String version = "1.1-VER";
         final String corrId = "123";
 
-        given(buildInfoConfig.getBuildInfo()).willReturn(
+        given(buildInfoConfiguration.getBuildInfo()).willReturn(
                 new BuildInfo("buildGroup", "buildArtifact", version, now()));
 
         // when : method to be checked invocation
@@ -63,7 +63,7 @@ public class AppInfoControllerTests {
         // given: all data (test fixture) preparation
         final String invalidVersion = "1.1-ver"; // lowercase not allowed
 
-        given(buildInfoConfig.getBuildInfo()).willReturn(
+        given(buildInfoConfiguration.getBuildInfo()).willReturn(
                 new BuildInfo("buildGroup", "buildArtifact", invalidVersion, now()));
 
         // when : method to be checked invocation

@@ -32,7 +32,7 @@ public class ReadSecretKeyEntriesTask extends RecursiveTask<ReadSecretKeyEntries
 
             MDC.setContextMap(mdcContext);
             log.debug("start compute, keystore file:{}, alias prefix:{}", keystoreFile, aliasPrefix);
-            final ReadSecretKeyEntriesResponse response = new ReadSecretKeyEntriesResponse(new TreeMap<>(), null, null);
+            final ReadSecretKeyEntriesResponse response = new ReadSecretKeyEntriesResponse(new TreeMap<>());
             final char[] password = keystorePassword.toCharArray();
             final KeyStore keyStore = KeyStore.getInstance(keystoreFile, password);
 
@@ -43,7 +43,7 @@ public class ReadSecretKeyEntriesTask extends RecursiveTask<ReadSecretKeyEntries
 //                if (keyStore.entryInstanceOf(alias, KeyStore.SecretKeyEntry.class) && alias.matches("^" + aliasPrefix)) {
                 if (keyStore.entryInstanceOf(alias, KeyStore.SecretKeyEntry.class)
                         && aliasPrefix.equals(aliasParts[0] + ALIAS_NAME_PART_DELIMITER + aliasParts[1] + ALIAS_NAME_PART_DELIMITER)) {
-                    log.debug("aaa:{}", alias);
+//                    log.debug("aaa:{}", alias);
                     final KeyStore.SecretKeyEntry entry = (KeyStore.SecretKeyEntry) keyStore.getEntry(alias, new KeyStore.PasswordProtection(password));
                     response.getSecretKeyEntries().put(alias, new String(entry.getSecretKey().getEncoded()));
                 }
@@ -53,7 +53,7 @@ public class ReadSecretKeyEntriesTask extends RecursiveTask<ReadSecretKeyEntries
 
         } catch (Exception e) {
             log.error("compute", e);
-            return new ReadSecretKeyEntriesResponse(EMPTY_MAP, null, e);
+            return new ReadSecretKeyEntriesResponse(e);
         } finally {
             MDC.clear();
         }

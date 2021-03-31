@@ -15,7 +15,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableEntryException;
 import java.security.cert.CertificateException;
 
-import static java.nio.charset.Charset.forName;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.isNull;
 
 //@Slf4j
@@ -68,6 +68,6 @@ public class KeystoreEnvironmentPostProcessor implements EnvironmentPostProcesso
             throw new IllegalStateException("cannot find CERT_PRIVATE_KEY in keystore");
         }
         final Path path = Paths.get(environment.getProperty("java.io.tmpdir"), environment.getProperty("cert.key.filename", "key.pem.b64"));
-        Files.write(path, (new String(entry.getSecretKey().getEncoded())).getBytes(forName("UTF-8")));
+        Files.write(path, (new String(entry.getSecretKey().getEncoded())).getBytes(UTF_8));
     }
 }

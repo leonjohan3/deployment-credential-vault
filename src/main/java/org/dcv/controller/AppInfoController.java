@@ -1,16 +1,15 @@
 package org.dcv.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.dcv.config.BuildInfoConfig;
+import org.dcv.config.BuildInfoConfiguration;
+import org.dcv.dto.BuildInfo;
 import org.dcv.dto.ProcessingError;
-import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
-import static org.dcv.config.BuildInfoConfig.BuildInfo;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
@@ -18,15 +17,15 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Slf4j
 public class AppInfoController {
 
-    private BuildInfoConfig buildInfoConfig;
+    private BuildInfoConfiguration buildInfoConfiguration;
 
-    public AppInfoController(final BuildInfoConfig buildInfoConfig) {
-        this.buildInfoConfig = buildInfoConfig;
+    public AppInfoController(final BuildInfoConfiguration buildInfoConfiguration) {
+        this.buildInfoConfiguration = buildInfoConfiguration;
     }
 
     @GetMapping(value = "/build-info", produces = APPLICATION_JSON_VALUE)
     public @Valid BuildInfo getBuildInfo() {
-        return buildInfoConfig.getBuildInfo();
+        return buildInfoConfiguration.getBuildInfo();
     }
 
     @GetMapping(value = "/bla", produces = APPLICATION_JSON_VALUE)

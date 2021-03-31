@@ -1,6 +1,5 @@
 package org.dcv.service;
 
-import lombok.extern.slf4j.Slf4j;
 import org.dcv.config.ApplicationConfiguration;
 import org.dcv.dto.SecretKeyEntry;
 import org.dcv.dto.SecretKeyEntryBase;
@@ -20,7 +19,7 @@ import java.util.concurrent.ForkJoinPool;
  * Manages the KeystoreReadWriteWorker
  */
 @Service
-@Slf4j
+//@Slf4j
 public class KeystoreService {
 
     private static ForkJoinPool forkJoinPool = new ForkJoinPool(1, ForkJoinPool.defaultForkJoinWorkerThreadFactory, null, true);

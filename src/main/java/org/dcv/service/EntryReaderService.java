@@ -1,6 +1,5 @@
 package org.dcv.service;
 
-import org.dcv.dto.SecretKeyEntry;
 import org.dcv.dto.SecretKeyEntryBase;
 import org.dcv.dto.SecretKeyEntryKeyName;
 import org.dcv.task.ReadSecretKeyEntriesResponse;
@@ -8,13 +7,12 @@ import org.dcv.task.ReadSingleSecretKeyEntryResponse;
 import org.springframework.stereotype.Service;
 
 import static java.util.Map.Entry;
-import static java.util.Objects.isNull;
 import static org.dcv.util.AliasToEnvVariableConverter.convertToEnvVariable;
 
 @Service
 public class EntryReaderService {
 
-    private KeystoreService keystoreService;
+    private final KeystoreService keystoreService;
 
     public EntryReaderService(KeystoreService keystoreService) {
         this.keystoreService = keystoreService;
@@ -33,13 +31,13 @@ public class EntryReaderService {
     public ReadSecretKeyEntriesResponse getExportedSecretKeyEntries(final SecretKeyEntryBase secretKeyEntry) {
         final ReadSecretKeyEntriesResponse response = keystoreService.getSecretKeyEntries(secretKeyEntry);
 
-        if (isNull(response.getException())) {
+        if (!response.hasException()) {
             final StringBuilder stringBuilder = new StringBuilder();
 
             for (final Entry<String, String> entry : response.getSecretKeyEntries().entrySet()) {
                 stringBuilder.append(String.format("export %s=\"%s\"%n", convertToEnvVariable(entry.getKey()), entry.getValue()));
             }
-            return new ReadSecretKeyEntriesResponse(response.getSecretKeyEntries(), stringBuilder.toString(), null);
+            return new ReadSecretKeyEntriesResponse(response.getSecretKeyEntries(), stringBuilder.toString());
         } else {
             return response;
         }
