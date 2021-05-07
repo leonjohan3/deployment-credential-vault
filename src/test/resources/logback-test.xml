@@ -1,12 +1,64 @@
-<configuration>
-    <include resource="org/springframework/boot/logging/logback/base.xml" />
-<!--    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">-->
-<!--        <encoder>-->
-<!--            <pattern>%d{HH:mm:ss.SSS} [%thread] corrId:%X{corrId} %-5level %logger{36} - %msg%n</pattern>-->
-<!--        </encoder>-->
-<!--    </appender>-->
-<!--    <root level="DEBUG">-->
-<!--        <appender-ref ref="CONSOLE"/>-->
-<!--    </root>-->
-    <logger name="root" level="WARN"/>
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false">
+
+    <contextName>dcv</contextName>
+    <property name="LOGGING_FOLDER" value="target"/>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <target>System.out</target>
+        <encoder>
+            <Pattern>%d{MM-dd HH:mm:ss} %-5level [%thread] %logger{25} - %msg%xEx{6}%n</Pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>TRACE</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>NEUTRAL</onMismatch>
+        </filter>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>DEBUG</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>NEUTRAL</onMismatch>
+        </filter>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>NEUTRAL</onMismatch>
+        </filter>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>WARN</level>
+            <onMatch>DENY</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <appender name="STDERR" class="ch.qos.logback.core.ConsoleAppender">
+        <target>System.err</target>
+        <encoder>
+            <Pattern>%d{MM-dd HH:mm:ss} %-5level [%thread] %logger{25} - %msg%xEx{6}%n</Pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>WARN</level>
+        </filter>
+    </appender>
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOGGING_FOLDER}/app.log</file>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOGGING_FOLDER}/app.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+
+        <encoder>
+            <Pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger - %msg%xEx{12}%n</Pattern>
+        </encoder>
+    </appender>
+
+    <!--    <logger name="org.dcv" level="DEBUG"/>-->
+
+    <root level="WARN">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="STDERR"/>
+        <appender-ref ref="FILE"/>
+    </root>
 </configuration>

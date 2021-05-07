@@ -11,9 +11,10 @@ import static org.dcv.util.Constants.MAX_SECRET_VALUE_LENGTH;
 @Value
 @EqualsAndHashCode(callSuper = true)
 public class SecretKeyEntry extends SecretKeyEntryKeyName {
+
     @NotBlank
     @Size(max = MAX_SECRET_VALUE_LENGTH)
-    String secretKeyValue;
+    private final String secretKeyValue;
 
     public SecretKeyEntry(final String groupId, final String artifactId, final String secretKeyName, final String secretKeyValue) {
         super(groupId, artifactId, secretKeyName);

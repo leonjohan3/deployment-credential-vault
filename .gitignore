@@ -33,3 +33,5 @@ build/
 .vscode/
 
 dome.sh
+key.pem
+._*

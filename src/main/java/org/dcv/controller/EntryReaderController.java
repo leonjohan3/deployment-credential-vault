@@ -3,97 +3,68 @@ package org.dcv.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.dcv.dto.SecretKeyEntryBase;
 import org.dcv.dto.SecretKeyEntryKeyName;
-import org.dcv.service.EntryReaderService;
-import org.dcv.task.ReadSecretKeyEntriesResponse;
-import org.dcv.task.ReadSingleSecretKeyEntryResponse;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.dcv.service.EntryService;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.inject.Inject;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Map;
 
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
-import static org.dcv.util.Constants.ERROR_MESSAGE_HEADER_NAME;
-import static org.dcv.util.Constants.MASKED_SECRET_KEY_VALUE;
+import static java.util.Map.Entry;
+import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
+import static org.dcv.util.AliasToEnvVariableConverter.convertToEnvVariable;
 import static org.dcv.util.Constants.REQUEST_ENTRY_ITEM_PATTERN;
+import static org.dcv.util.Constants.REQUEST_ENTRY_NAME_PATTERN;
 
-@RestController
-@RequestMapping("/v1/read")
-@Validated
 @Slf4j
+@Path("/v1/read")
 public class EntryReaderController {
 
-    private final EntryReaderService entryReaderService;
-
-    public EntryReaderController(final EntryReaderService entryReaderService) {
-        this.entryReaderService = entryReaderService;
-    }
-
-    // TODO - map constraint validation error
-    // TODO - add open API docs
+    @Inject
+    private EntryService entryService;
 
     /**
-     * This API reads a single entry from the keystore
+     * This API reads a single entry from the secret store
      */
-    @GetMapping(value = "/{groupId}/{artifactId}/{secretKeyName}", produces = MediaType.TEXT_PLAIN_VALUE)
-    public ResponseEntity<String> getSecretKeyEntry(@PathVariable @Pattern(regexp = REQUEST_ENTRY_ITEM_PATTERN) final String groupId,
-                                                    @PathVariable @Pattern(regexp = REQUEST_ENTRY_ITEM_PATTERN) final String artifactId,
-                                                    @PathVariable @Pattern(regexp = REQUEST_ENTRY_ITEM_PATTERN) final String secretKeyName) {
+    @GET
+    @Path("/{groupId}/{artifactId}/{secretKeyName}")
+    @Produces(TEXT_PLAIN)
+    public @NotNull String getSecretKeyEntry(@PathParam("groupId") @Pattern(regexp = REQUEST_ENTRY_ITEM_PATTERN) final String groupId,
+                                             @PathParam("artifactId") @Pattern(regexp = REQUEST_ENTRY_ITEM_PATTERN) final String artifactId,
+                                             @PathParam("secretKeyName") @Pattern(regexp = REQUEST_ENTRY_NAME_PATTERN) final String secretKeyName) throws BadPaddingException, IllegalBlockSizeException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
 
-        log.info("start getSecretKeyEntry: {}, {}, {}", groupId, artifactId, secretKeyName);
-        final ReadSingleSecretKeyEntryResponse readSingleSecretKeyEntryResponse = entryReaderService.getSecretKeyEntry(new SecretKeyEntryKeyName(groupId,
-                artifactId, secretKeyName));
-        ResponseEntity<String> response;
-
-        if (readSingleSecretKeyEntryResponse.hasException()) {
-//            response = ResponseEntity.badRequest().build();
-            response = ResponseEntity.badRequest().header(ERROR_MESSAGE_HEADER_NAME, readSingleSecretKeyEntryResponse.getException().getMessage()).build();
-        } else {
-
-            if (nonNull(readSingleSecretKeyEntryResponse.getSecretKeyEntry())) {
-                log.info("finish getSecretKeyEntry: {}", log.isTraceEnabled() ? readSingleSecretKeyEntryResponse.getSecretKeyEntry() :
-                        MASKED_SECRET_KEY_VALUE);
-                response = ResponseEntity.ok().body(readSingleSecretKeyEntryResponse.getSecretKeyEntry());
-            } else {
-                log.warn("finish getSecretKeyEntry: not found");
-                response = ResponseEntity.notFound().build();
-            }
-        }
-        return response;
+        log.info("start getSecretKeyEntry, groupId: {}, artifactId: {}, secretKeyName: {}", groupId, artifactId, secretKeyName);
+        final String result = entryService.getSecretKeyEntry(new SecretKeyEntryKeyName(groupId, artifactId, secretKeyName));
+        log.info("finish getSecretKeyEntry, groupId: {}, artifactId: {}, secretKeyName: {}", groupId, artifactId, secretKeyName);
+        return result;
     }
 
     /**
-     * This API reads all entries from the keystore for an alias prefix and provides them in bash export format
+     * This API reads all entries from the secret store for an alias prefix and provides them in bash export format
      */
-    @GetMapping(value = "/{groupId}/{artifactId}", produces = MediaType.TEXT_PLAIN_VALUE)
-    public ResponseEntity<String> getSecretKeyEntries(@PathVariable @Pattern(regexp = REQUEST_ENTRY_ITEM_PATTERN) final String groupId,
-                                                      @PathVariable @Pattern(regexp = REQUEST_ENTRY_ITEM_PATTERN) final String artifactId) {
+    @GET
+    @Path(value = "/{groupId}/{artifactId}")
+    @Produces(TEXT_PLAIN)
+    public @NotNull String getSecretKeyEntries(@PathParam("groupId") @Pattern(regexp = REQUEST_ENTRY_ITEM_PATTERN) final String groupId,
+                                               @PathParam("artifactId") @Pattern(regexp = REQUEST_ENTRY_ITEM_PATTERN) final String artifactId) {
 
-        log.info("start getSecretKeyEntries: {}, {}", groupId, artifactId);
-        // TODO - use inheritance for SecretKeyEntry sub types [done]
-        final ReadSecretKeyEntriesResponse readSecretKeyEntriesResponse = entryReaderService.getExportedSecretKeyEntries(new SecretKeyEntryBase(groupId,
-                artifactId));
-        ResponseEntity<String> response;
+        log.info("start getSecretKeyEntries, groupId: {}, artifactId: {}", groupId, artifactId);
+        final Map<String, String> entries = entryService.getSecretKeyEntries(new SecretKeyEntryBase(groupId, artifactId));
+        final StringBuilder stringBuilder = new StringBuilder();
 
-        if (readSecretKeyEntriesResponse.hasException()) {
-            // TODO - change other 400s and 404s
-            response = ResponseEntity.badRequest().header(ERROR_MESSAGE_HEADER_NAME, readSecretKeyEntriesResponse.getException().getMessage()).build();
-        } else {
-
-            if (isNull(readSecretKeyEntriesResponse.getExportedSecretKeyEntries())) {
-                log.warn("finish getSecretKeyEntries: not found");
-//                response = ResponseEntity.notFound().build();
-                response = ResponseEntity.notFound().header(ERROR_MESSAGE_HEADER_NAME, String.format("nothing found for groupId: %s and artifactId: %s", groupId, artifactId)).build();
-            } else {
-                log.info("finish getSecretKeyEntries, count: {}", readSecretKeyEntriesResponse.getSecretKeyEntries().size());
-                response = ResponseEntity.ok().body(readSecretKeyEntriesResponse.getExportedSecretKeyEntries());
-            }
+        for (final Entry<String, String> entry : entries.entrySet()) {
+            stringBuilder.append(String.format("export %s=\"%s\"%n", convertToEnvVariable(entry.getKey()), entry.getValue()));
         }
-        return response;
+        log.info("finish getSecretKeyEntries, groupId: {}, artifactId: {}, count:{}", groupId, artifactId, entries.size());
+        return stringBuilder.toString();
     }
 }

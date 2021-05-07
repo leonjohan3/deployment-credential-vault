@@ -2,111 +2,94 @@ package org.dcv.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.dcv.dto.SecretKeyEntry;
-import org.dcv.service.EntryWriterService;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.dcv.dto.SecretKeyEntryKeyName;
+import org.dcv.service.EntryService;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validator;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
-import java.util.Map;
-import java.util.Set;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MultivaluedMap;
+import java.util.List;
 
 import static java.util.Map.Entry;
-import static java.util.Objects.nonNull;
+import static javax.ws.rs.core.MediaType.APPLICATION_FORM_URLENCODED;
+import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 import static org.dcv.util.Constants.ALIAS_NAME_PART_DELIMITER;
-import static org.dcv.util.Constants.ERROR_MESSAGE_HEADER_NAME;
-import static org.dcv.util.Constants.MASKED_SECRET_KEY_VALUE;
 import static org.dcv.util.Constants.REQUEST_ENTRY_ITEM_PATTERN;
-import static org.springframework.http.HttpStatus.CREATED;
+import static org.dcv.util.Constants.REQUEST_ENTRY_NAME_PATTERN;
 
-@RestController
-@RequestMapping("/v1/write")
-@Validated
 @Slf4j
+@Path("/v1/write")
 public class EntryWriterController {
 
-    private final Validator validator;
-    private final EntryWriterService entryWriterService;
+    @Inject
+//    @Resource
+//    private ValidatorFactory validatorFactory;
+    private EntryService entryService;
 
-    public EntryWriterController(final Validator validator, final EntryWriterService entryWriterService) {
-        this.validator = validator;
-        this.entryWriterService = entryWriterService;
-    }
-/*
-//    @PostMapping(value = "/bla", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-//    @PostMapping(value = "/bla", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
-    @PostMapping(value = "/bla/{groupId}/{artifactId}", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
-//    @GetMapping(value = "/bla", produces = MediaType.APPLICATION_JSON_VALUE)
-//    @ResponseStatus(CREATED)
-//    public String test(@Valid @RequestBody final ProcessingError processingError) {
-    public String test(@PathVariable @Pattern(regexp = REQUEST_ENTRY_ITEM_PATTERN) final String groupId,
-                       @PathVariable @Pattern(regexp = REQUEST_ENTRY_ITEM_PATTERN) final String artifactId,
-                       @RequestParam @NotNull final Map<String, String> secretKeyNames) {
-//    public ProcessingError test() {
-//        log.info("aaa:{}", processingError.getErrorMessage());
-        log.info("start setSecretKeyEntry");
-        log.info("aaa:{}", secretKeyNames);
-//        log.info("aaa:");
-        if (groupId.contains(ALIAS_NAME_PART_DELIMITER)) {
-            throw new IllegalArgumentException(String.format("invalid groupId name: %s, using \"%s\"", groupId, ALIAS_NAME_PART_DELIMITER));
-        }
-        if (artifactId.contains(ALIAS_NAME_PART_DELIMITER)) {
-            throw new IllegalArgumentException(String.format("invalid artifactId name: %s, using \"%s\"", artifactId, ALIAS_NAME_PART_DELIMITER));
-        }
-        return secretKeyNames.get("errorMessage").toUpperCase() + groupId + artifactId;
-//        return processingError.getErrorMessage().toUpperCase();
-    }
- */
-
-    // TODO - map constraint validation error
-    /*
+    /**
+     * This API inserts or updates entries to the secret store
      */
+    @POST
+    @Path("/{groupId}/{artifactId}")
+//    @Produces(TEXT_PLAIN)
+    @Consumes(APPLICATION_FORM_URLENCODED)
+    public void setSecretKeyEntry(@PathParam("groupId") @Pattern(regexp = REQUEST_ENTRY_ITEM_PATTERN) final String groupId,
+                                             @PathParam("artifactId") @Pattern(regexp = REQUEST_ENTRY_ITEM_PATTERN) final String artifactId,
+                                             @NotNull final MultivaluedMap<String, String> secretKeyNames) throws BadPaddingException, IllegalBlockSizeException {
 
-    @PostMapping(value = "/{groupId}/{artifactId}", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
-    public ResponseEntity<String> setSecretKeyEntry(@PathVariable @Pattern(regexp = REQUEST_ENTRY_ITEM_PATTERN) final String groupId,
-                                                    @PathVariable @Pattern(regexp = REQUEST_ENTRY_ITEM_PATTERN) final String artifactId,
-                                                    @RequestParam @NotNull final Map<String, String> secretKeyNames) {
+        log.info("start setSecretKeyEntry, groupId: {}, artifactId: {}, secretKeyNames.size: {}", groupId, artifactId, secretKeyNames.size());
 
-        log.info("start setSecretKeyEntry");
-
-        // TODO - add exception handler and write tests for these
+        // double _ not allowed in part of the name as this is used for `getSecretKeyEntries`
         if (groupId.contains(ALIAS_NAME_PART_DELIMITER)) {
-            throw new IllegalArgumentException(String.format("invalid groupId name: %s, using \"%s\"", groupId, ALIAS_NAME_PART_DELIMITER));
+            throw new IllegalArgumentException(String.format("invalid groupId name: %s, using \"%s\" not permitted", groupId, ALIAS_NAME_PART_DELIMITER));
         }
         if (artifactId.contains(ALIAS_NAME_PART_DELIMITER)) {
-            throw new IllegalArgumentException(String.format("invalid artifactId name: %s, using \"%s\"", artifactId, ALIAS_NAME_PART_DELIMITER));
+            throw new IllegalArgumentException(String.format("invalid artifactId name: %s, using \"%s\" not permitted", artifactId,
+                    ALIAS_NAME_PART_DELIMITER));
         }
 
-        for (final Entry<String, String> entry : secretKeyNames.entrySet()) {
-
+        for (Entry<String, List<String>> entry : secretKeyNames.entrySet()) {
             if (entry.getKey().contains(ALIAS_NAME_PART_DELIMITER)) {
-                throw new IllegalArgumentException(String.format("invalid entry name: %s, using \"%s\"", entry.getKey(), ALIAS_NAME_PART_DELIMITER));
+                throw new IllegalArgumentException(String.format("invalid entry name: %s, using \"%s\" not permitted", entry.getKey(),
+                        ALIAS_NAME_PART_DELIMITER));
             }
-            final SecretKeyEntry secretKeyEntry = new SecretKeyEntry(groupId, artifactId, entry.getKey(), entry.getValue());
-            final Set<ConstraintViolation<SecretKeyEntry>> validationResults = validator.validate(secretKeyEntry);
+            final SecretKeyEntry secretKeyEntry = new SecretKeyEntry(groupId, artifactId, entry.getKey(), entry.getValue().get(0));
+            entryService.setSecretKeyEntry(secretKeyEntry);
+//            final Validator validator = validatorFactory.getValidator();
+//            final Set<ConstraintViolation<SecretKeyEntry>> validationResults = validator.validate(secretKeyEntry);
+//
+//            if (!validationResults.isEmpty()) {
+//                throw new ConstraintViolationException(validationResults);
+//            }
 
-            if (!validationResults.isEmpty()) {
-                throw new ConstraintViolationException(validationResults);
-            }
-            log.info("secretKeyEntry: {}, {}, {}, {}", groupId, artifactId, secretKeyEntry.getSecretKeyName(), log.isTraceEnabled() ?
-                    secretKeyEntry.getSecretKeyValue() : MASKED_SECRET_KEY_VALUE);
-            final Exception exception = entryWriterService.setSecretKeyEntry(secretKeyEntry);
-
-            if (nonNull(exception)) {
-//                return ResponseEntity.badRequest().body(exception.getMessage());
-                return ResponseEntity.badRequest().header(ERROR_MESSAGE_HEADER_NAME, exception.getMessage()).body(exception.getMessage());
-            }
         }
-        log.info("finish setSecretKeyEntry, count:{}", secretKeyNames.size());
-        return ResponseEntity.status(CREATED).build();
+
+//        return "string,";
+//        return "string," + secretKeyNames.getFirst("abc");
+    }
+
+    /**
+     * This API removes/deletes a single entry from the secret store
+     */
+    @DELETE
+    @Path("/{groupId}/{artifactId}/{secretKeyName}")
+    @Produces(TEXT_PLAIN)
+    public void removeSecretKeyEntry(@PathParam("groupId") @Pattern(regexp = REQUEST_ENTRY_ITEM_PATTERN) final String groupId,
+                                     @PathParam("artifactId") @Pattern(regexp = REQUEST_ENTRY_ITEM_PATTERN) final String artifactId,
+                                     @PathParam("secretKeyName") @Pattern(regexp = REQUEST_ENTRY_NAME_PATTERN) final String secretKeyName) {
+
+        log.info("start removeSecretKeyEntry, groupId: {}, artifactId: {}, secretKeyName: {}", groupId, artifactId, secretKeyName);
+        final SecretKeyEntryKeyName secretKeyEntryKeyName = new SecretKeyEntryKeyName(groupId, artifactId, secretKeyName);
+        entryService.removeSecretKeyEntry(secretKeyEntryKeyName);
+        log.info("finish removeSecretKeyEntry, groupId: {}, artifactId: {}, secretKeyName: {}", groupId, artifactId, secretKeyName);
     }
 }
