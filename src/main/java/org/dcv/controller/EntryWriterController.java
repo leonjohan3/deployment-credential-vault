@@ -56,7 +56,9 @@ public class EntryWriterController {
             throw new IllegalArgumentException(String.format("invalid artifactId name: %s, using \"%s\" not permitted", artifactId,
                     ALIAS_NAME_PART_DELIMITER));
         }
-
+        if (secretKeyNames.isEmpty()) {
+            throw new IllegalArgumentException(String.format("no secretKeyNames/Values provided, groupId: %s, artifactId: %s", groupId, artifactId));
+        }
         for (Entry<String, List<String>> entry : secretKeyNames.entrySet()) {
             if (entry.getKey().contains(ALIAS_NAME_PART_DELIMITER)) {
                 throw new IllegalArgumentException(String.format("invalid entry name: %s, using \"%s\" not permitted", entry.getKey(),

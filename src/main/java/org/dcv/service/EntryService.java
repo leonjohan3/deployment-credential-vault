@@ -162,6 +162,11 @@ public class EntryService {
     public synchronized @NotNull String getSecretKeyEntry(@Valid final SecretKeyEntryKeyName secretKeyEntryKeyName) throws BadPaddingException,
             IllegalBlockSizeException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
 //        final String secretKeyValue = getSecretKeyEntryFromDb(secretKeyEntryKeyName);
+        final float a = getRuntime().totalMemory() - getRuntime().freeMemory();
+        final float b = getRuntime().totalMemory();
+        final float usedMemory = a / b;
+        log.info("mem entry: total:{}MB, free:{}MB, %used:{}", getRuntime().totalMemory() / 1024 / 1024, getRuntime().freeMemory() / 1024 / 1024,
+                format("%.1f", usedMemory * 100));
         return decryptSecretKeyValue(getSecretKeyEntryFromDb(secretKeyEntryKeyName));
     }
 
